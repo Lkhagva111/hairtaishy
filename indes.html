@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Гэрлээ ✦</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rose:  #c9697a;
+  --rose2: #a04d5e;
+  --blush: #f4d4da;
+  --cream: #fdf6f0;
+  --deep:  #150b0e;
+  --mid:   #1f1014;
+  --gold:  #c9a96e;
+  --gold2: #a0834a;
+  --muted: #7a5660;
+  --text:  #e8d0d6;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--deep);
+  color: var(--text);
+  font-family: 'Cormorant Garamond', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Stars canvas ── */
+#starCanvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Screens ── */
+.screen {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+}
+
+/* ══════════════════════════
+   GIFT SCREEN
+══════════════════════════ */
+#giftScreen {
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 35%, #3a1525 0%, transparent 70%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, #1a0a10 0%, transparent 60%),
+    #0e070a;
+}
+
+/* Ornamental ring */
+.gift-ring {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.gift-ring::before, .gift-ring::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid;
+  animation: ringPulse 3s ease-in-out infinite;
+}
+.gift-ring::before {
+  inset: 0;
+  border-color: rgba(201,105,122,0.25);
+}
+.gift-ring::after {
+  inset: 12px;
+  border-color: rgba(201,105,122,0.12);
+  animation-delay: .5s;
+}
+@keyframes ringPulse {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.04); opacity: .6; }
+}
+
+.gift-icon {
+  font-size: 88px;
+  animation: floatY 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(201,105,122,0.5))
+          drop-shadow(0 0 80px rgba(201,105,122,0.15));
+  user-select: none;
+}
+@keyframes floatY {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-18px) rotate(2deg); }
+}
+
+.gift-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  font-weight: 400;
+  color: var(--blush);
+  text-align: center;
+  letter-spacing: .03em;
+  line-height: 1.4;
+  margin-top: 8px;
+}
+.gift-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.gift-hint {
+  font-size: .95rem;
+  color: var(--muted);
+  font-style: italic;
+  letter-spacing: .06em;
+  margin-top: 4px;
+  text-align: center;
+}
+
+/* Pill button */
+.open-btn {
+  margin-top: 8px;
+  padding: 13px 52px;
+  border: 1px solid rgba(201,105,122,0.5);
+  background: rgba(201,105,122,0.07);
+  color: var(--blush);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 60px;
+  backdrop-filter: blur(6px);
+  transition: background .3s, border-color .3s, color .3s, transform .2s;
+}
+.open-btn:hover {
+  background: rgba(201,105,122,0.2);
+  border-color: var(--rose);
+  color: var(--cream);
+  transform: scale(1.03);
+}
+
+/* Ornament line */
+.orn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--muted);
+  font-size: .8rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+.orn::before, .orn::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(201,105,122,.3), transparent);
+  min-width: 40px;
+}
+
+/* ══════════════════════════
+   MAIN CONTENT
+══════════════════════════ */
+#mainContent {
+  display: none;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, #2a1020 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, #1a0d18 0%, transparent 50%),
+    #0e070a;
+}
+
+.content-wrap {
+  max-width: 580px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 44px;
+}
+
+/* ── Title ── */
+.title-block { text-align: center; }
+
+.eyebrow {
+  font-size: .78rem;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  opacity: .85;
+}
+
+.title-block h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 8vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--blush);
+  letter-spacing: -.01em;
+}
+.title-block h1 span {
+  display: block;
+  font-style: italic;
+  font-weight: 400;
+  color: rgba(244,212,218,.6);
+  font-size: .55em;
+  letter-spacing: .08em;
+  margin-top: 10px;
+}
+
+/* ── Divider ── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(201,105,122,.2), transparent);
+}
+.divider-diamond {
+  width: 5px; height: 5px;
+  background: var(--rose2);
+  transform: rotate(45deg);
+  opacity: .6;
+}
+
+/* ── Slider ── */
+.slider-wrap { width: 100%; }
+
+.slider-frame {
+  width: 100%;
+  aspect-ratio: 3/2;
+  max-height: 360px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(201,105,122,0.15),
+    0 30px 80px rgba(0,0,0,0.7),
+    0 0 60px rgba(201,105,122,0.06) inset;
+}
+
+/* Vignette overlay on photos */
+.slider-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(14,7,10,0.5) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.slider-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.slider-frame img.active { opacity: 1; }
+
+/* counter pill */
+.slide-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding: 0 2px;
+}
+.slide-dots {
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: background .4s, transform .4s, width .4s;
+  opacity: .5;
+}
+.dot.active {
+  background: var(--rose);
+  transform: scale(1.3);
+  opacity: 1;
+  width: 18px;
+  border-radius: 4px;
+}
+.slide-counter {
+  font-size: .78rem;
+  letter-spacing: .1em;
+  color: var(--muted);
+}
+
+/* ── Cards ── */
+.card {
+  width: 100%;
+  border: 1px solid rgba(201,105,122,0.12);
+  border-radius: 12px;
+  padding: 30px 34px;
+  background: rgba(255,255,255,0.025);
+  backdrop-filter: blur(8px);
+  line-height: 2;
+  font-size: 1.1rem;
+  color: var(--text);
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(201,105,122,.3), transparent);
+}
+
+
+
+.card h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+
+/* ── Letter button ── */
+.letter-btn {
+  padding: 16px 52px;
+  border: none;
+  background: linear-gradient(135deg, var(--rose2) 0%, var(--rose) 100%);
+  color: var(--cream);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  letter-spacing: .08em;
+  cursor: pointer;
+  border-radius: 60px;
+  box-shadow: 0 8px 40px rgba(201,105,122,0.3), 0 0 0 1px rgba(201,105,122,0.15);
+  transition: transform .25s, box-shadow .25s;
+  position: relative;
+  overflow: hidden;
+}
+.letter-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.08) 0%, transparent 60%);
+}
+.letter-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 16px 50px rgba(201,105,122,0.45), 0 0 0 1px rgba(201,105,122,0.3);
+}
+.letter-btn:active { transform: translateY(0) scale(1); }
+
+/* ── Letter box ── */
+#letterBox {
+  display: none;
+  width: 100%;
+  border: 1px solid rgba(201,169,110,0.2);
+  border-radius: 12px;
+  padding: 40px 36px 36px;
+  background: rgba(201,169,110,0.04);
+  backdrop-filter: blur(8px);
+  font-size: 1.08rem;
+  line-height: 2.1;
+  color: var(--text);
+  font-style: italic;
+  position: relative;
+  overflow: hidden;
+}
+#letterBox::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(201,169,110,.3), transparent);
+}
+#letterBox .quote-mark {
+  font-family: 'Playfair Display', serif;
+  font-size: 5rem;
+  color: rgba(201,169,110,0.1);
+  line-height: 1;
+  position: absolute;
+  top: 10px;
+  left: 26px;
+  font-style: normal;
+  pointer-events: none;
+}
+
+/* ── Fade-in ── */
+.fade-in { animation: fadeUp .9s cubic-bezier(.22,1,.36,1) both; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Footer ── */
+.footer-sig {
+  font-size: .85rem;
+  color: var(--muted);
+  letter-spacing: .1em;
+  text-align: center;
+  opacity: .5;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .card { padding: 22px 22px; }
+  #letterBox { padding: 30px 22px 24px; }
+  .open-btn { padding: 12px 40px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="starCanvas"></canvas>
+
+<!-- ════════════════ GIFT SCREEN ════════════════ -->
+<div id="giftScreen" class="screen">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:36px;">
+
+    <div class="gift-ring" onclick="openGift()" title="Нээх">
+      <div class="gift-icon">🎁</div>
+    </div>
+
+    <div style="text-align:center;">
+      <p class="gift-title">Зөвхөн <em>чамдаа</em> зориулсан<br>юм шүү..</p>
+    </div>
+
+    <div class="orn">
+      <span>✦</span>
+    </div>
+
+    <button class="open-btn" onclick="openGift()">Нээх</button>
+
+  </div>
+</div>
+
+<!-- ════════════════ MAIN CONTENT ════════════════ -->
+<div id="mainContent" class="screen">
+  <div class="content-wrap">
+
+    <!-- Title -->
+    <div class="title-block fade-in">
+      <p class="eyebrow">✦ &nbsp;         &nbsp; ✦</p>
+      <h1>Төрсөн өдрийн мэнд<br>Гэрлээ
+        <span>Өнөөдрийн энэ өдөр бүхэлдээ чинийх минь юм шүү</span>
+      </h1>
+    </div>
+
+    <!-- Divider -->
+    <div class="divider fade-in" style="animation-delay:.12s">
+      <div class="divider-diamond"></div>
+      <div class="divider-diamond" style="opacity:.3;transform:rotate(45deg) scale(.6)"></div>
+      <div class="divider-diamond"></div>
+    </div>
+
+    <!-- Slider -->
+    <div class="slider-wrap fade-in" style="animation-delay:.2s">
+      <div class="slider-frame" id="sliderFrame"></div>
+      <div class="slide-meta">
+        <div class="slide-dots" id="dots"></div>
+      </div>
+    </div>
+
+    <!-- Birthday card -->
+<div class="card fade-in" style="animation-delay:.3s; text-align: center;">
+  <span class="card-icon" style="font-size: 4.2rem; margin-bottom: 20px; display: block;">
+    🎂
+  </span>
+  <h2 style="margin-bottom: 16px; color: var(--gold);">Төрсөн өдрийн мэнд хүргэе!</h2>
+  <p style="font-size: 1.15rem; line-height: 1.8;">
+    Чи минь үргэлж аз жаргалтай, инээмсэглэлтэй байгаасай.
+  </p>
+</div>
+    <!-- Birthday card -->
+   
+
+  
+
+    <!-- Letter button -->
+    <button class="letter-btn fade-in" style="animation-delay:.52s" onclick="showLetter()">
+      💌 &nbsp; 
+    </button>
+
+    <!-- Letter -->
+    <div id="letterBox">
+      <span class="quote-mark">❝</span>
+    </div>
+
+    <p class="footer-sig fade-in" style="animation-delay:.6s">— Лхагваа ❤️</p>
+
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════
+   STAR / PARTICLE CANVAS
+══════════════════════════════ */
+const sc = document.getElementById('starCanvas');
+const cx = sc.getContext('2d');
+let W, H, stars = [], floaters = [];
+
+function resize() {
+  W = sc.width  = window.innerWidth;
+  H = sc.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+/* Static stars */
+for (let i = 0; i < 120; i++) {
+  stars.push({
+    x: Math.random(),
+    y: Math.random(),
+    r: Math.random() * 1.2 + 0.2,
+    a: Math.random() * .6 + .1,
+    twinkle: Math.random() * Math.PI * 2
+  });
+}
+
+/* Floating orbs */
+function mkOrb() {
+  return {
+    x: Math.random() * W,
+    y: H + 20,
+    r: Math.random() * 3.5 + 1,
+    speed: Math.random() * .5 + .2,
+    drift: (Math.random() - .5) * .35,
+    alpha: Math.random() * .45 + .1,
+    hue: Math.random() > .5 ? '201,105,122' : '201,169,110'
+  };
+}
+for (let i = 0; i < 55; i++) {
+  const o = mkOrb(); o.y = Math.random() * H;
+  floaters.push(o);
+}
+
+let tick = 0;
+function draw() {
+  cx.clearRect(0, 0, W, H);
+  tick += .012;
+
+  /* Stars */
+  stars.forEach(s => {
+    const a = s.a * (.7 + .3 * Math.sin(tick * 1.5 + s.twinkle));
+    cx.beginPath();
+    cx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+    cx.fillStyle = `rgba(255,240,230,${a})`;
+    cx.fill();
+  });
+
+  /* Orbs */
+  floaters.forEach((o, i) => {
+    o.y  -= o.speed;
+    o.x  += o.drift;
+    if (o.y < -10) floaters[i] = mkOrb();
+    cx.beginPath();
+    cx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
+    cx.fillStyle = `rgba(${o.hue},${o.alpha})`;
+    cx.fill();
+  });
+
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* ══════════════════════════════
+   SLIDER
+══════════════════════════════ */
+const images = [
+  "02fad2fb-8fe0-4f75-960f-3a915ca087da.jpg",
+  "e2c0d77a-2dc6-4f16-9395-354a31017448.jpg",
+  "e540f58b-fbf3-4464-a9a5-37c81061ed2d.jpg",
+  "e7586a9c-29f7-4c80-af44-aa54019cc9a9.jpg",
+  "f1a3508f-8d2a-46f8-a116-8d25fcd4a262.jpg"
+];
+let cur = 0;
+
+function buildSlider() {
+  const frame = document.getElementById('sliderFrame');
+  const dotsEl = document.getElementById('dots');
+  images.forEach((src, i) => {
+    const img = document.createElement('img');
+    img.src = src; img.alt = '';
+    if (i === 0) img.classList.add('active');
+    frame.appendChild(img);
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    dotsEl.appendChild(d);
+  });
+}
+buildSlider();
+
+
+setInterval(() => {
+  const imgs = document.querySelectorAll('#sliderFrame img');
+  const dotsEl = document.querySelectorAll('.dot');
+  imgs[cur].classList.remove('active');
+  dotsEl[cur].classList.remove('active');
+  cur = (cur + 1) % images.length;
+  imgs[cur].classList.add('active');
+  dotsEl[cur].classList.add('active');
+}, 3500);
+
+/* ══════════════════════════════
+   GIFT → MAIN transition
+══════════════════════════════ */
+function openGift() {
+  const gs = document.getElementById('giftScreen');
+  gs.style.transition = 'opacity .6s ease';
+  gs.style.opacity = '0';
+  setTimeout(() => {
+    gs.style.display = 'none';
+    const main = document.getElementById('mainContent');
+    main.style.display = 'flex';
+    main.style.opacity = '0';
+    main.style.transition = 'opacity .8s ease';
+    requestAnimationFrame(() => requestAnimationFrame(() => main.style.opacity = '1'));
+  }, 600);
+}
+
+/* ══════════════════════════════
+   LETTER TYPEWRITER
+══════════════════════════════ */
+function showLetter() {
+  const box = document.getElementById('letterBox');
+  if (box.dataset.shown) return;
+  box.dataset.shown = '1';
+  box.style.display = 'block';
+  box.style.animation = 'fadeUp .7s cubic-bezier(.22,1,.36,1) both';
+
+  const lines = [
+     'Сайн уу, Гэрлээ.',
+    'Энэ өдрийг маш удаан хүлээлээ',
+    'чи минь сайн уу',
+    'чамайгаа үнэнийг хэлэхэд',
+    'маш их санаж байна',
+    '',
+    'гэхдээ чамд минь тухгүй байдал үүсэх болов уу гээд',
+    'очиж чадахгүйнхээ уучлаарай',
+    'Төрсөн өдрийн мэнд.',
+    'Удахгүй болох',
+    'Төгсөлтийн баярын мэнд.',
+    'Чи минь миний хувьд хамгийн төгс төгөлдөр нэгэн',
+    'юм шүү болдог бол хөтлөлцөөд алхах сан хайртай шүү',
+    'Хэрвээ надтай уулзахыг хүсвэл хэзээ ч хамаагүй хэлээрэй',
+    
+  ];
+
+  const text = lines.join('\n');
+  /* keep the quote mark */
+  box.innerHTML = '<span class="quote-mark">❝</span>';
+  const span = document.createElement('span');
+  box.appendChild(span);
+
+  let i = 0;
+  function type() {
+    if (i < text.length) {
+      const ch = text.charAt(i);
+      span.innerHTML += ch === '\n' ? '<br>' : ch;
+      i++;
+      setTimeout(type, ch === '\n' ? 80 : 28);
+    }
+  }
+  type();
+  setTimeout(() => box.scrollIntoView({ behavior: 'smooth', block: 'center' }), 150);
+}
+</script>
+</body>
+</html>
